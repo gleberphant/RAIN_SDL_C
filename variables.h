@@ -1,3 +1,8 @@
+typedef struct OBJECT OBJECT;
+typedef struct COLOR COLOR;
+typedef struct NODE NODE;
+typedef struct APP APP;
+
 struct COLOR{
     int r, g, b;
 };
@@ -15,7 +20,7 @@ struct OBJECT
 struct NODE{
     int count;
     OBJECT node;
-    struct NODE* next;
+    NODE* next;
 };
 
 
@@ -26,10 +31,7 @@ struct APP
 };
 
 
-typedef struct OBJECT OBJECT;
-typedef struct COLOR COLOR;
-typedef struct NODE NODE;
-typedef struct APP APP;
+
 
 #define RENDER_HEIGHT 600
 #define RENDER_WIDTH 800
