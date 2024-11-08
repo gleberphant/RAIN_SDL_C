@@ -2,18 +2,26 @@
 
 ![LOGOSDL](https://www.libsdl.org/media/SDL_logo.png)
 
-![C BADGE](https://img.shields.io/badge/-C++-blue?logo=cplusplus)
+<br>
 
-![GitHub Sponsors](https://img.shields.io/github/sponsors/:user)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/:interval/:user/:repo)
-![GitHub last commit](https://img.shields.io/github/last-commit/:user/:repo)
-![GitHub License](https://img.shields.io/github/license/:user/:repo)
+![C BADGE](https://img.shields.io/badge/c-blue?logo=c)
 
+![GitHub Sponsors](https://img.shields.io/github/sponsors/gleberphant)
+![GitHub last commit](https://img.shields.io/github/last-commit/gleberphant/RAIN_SDL_C)
+![GitHub branch status](https://img.shields.io/github/checks-status/gleberphant/RAIN_SDL_C/master)
+![LibrePay](https://img.shields.io/liberapay/receives/gleberphant.svg?logo=liberapay)
+
+![GitHub License](https://img.shields.io/github/license/gleberphant/RAIN_SDL_C)
 
 Desenvolvido por<a href=biolivre.com.br/handersongleber> Handerson Gleber( gr4v4t1nh4) </a>
 
 
-<p align="center">Gostou do projeto? Por favor considere <a href="http://link.mercadopago.com.br/handersongleber">fazer uma doação</a> para ajudar a melhorá-lo!</p>
+Gostou do projeto? Por favor considere fazer uma doação para ajudar a melhorá-lo!
+
+<a href="https://liberapay.com/gleberphant/donate"><img alt="Donate using Liberapay" src="https://img.shields.io/badge/Liberapay-F6C915?logo=liberapay&logoColor=000&style=flat"></a>
+<a href="http://link.mercadopago.com.br/handersongleber" ><img src="https://img.shields.io/badge/Mercado%20Pago-00B1EA?logo=mercadopago&logoColor=fff&style=flat"></a>
+<a href="https://www.paypal.com/donate/?business=GZCPGEVTCZ8VW&no_recurring=0&currency_code=USD" ><img src="https://img.shields.io/badge/PayPal-003087?logo=paypal&logoColor=fff&style=flat"></a>
+
 
 </div>
 
@@ -88,8 +96,16 @@ Disponibilizo como código aberto quase tudo o que posso e tento responder a tod
 
 Se você estiver satisfeito com esse projeto ou  quiser me encorajar a continuar criando coisas legais, considere me apoiar:
 
-- Dando os devidos créditos caso utilize meu código
-- Dando uma estrela (Starring) e compartilhando o projeto 🚀
-- Me Pagando um café [![Static Badge](https://img.shields.io/badge/Mercado_Livre-blue)]("http://link.mercadopago.com.br/handersongleber") ou  [![paypal](https://img.shields.io/badge/Pay_Pal-blue)]("https://www.paypal.com/donate/?business=GZCPGEVTCZ8VW&no_recurring=0&currency_code=USD")
+- Dando uma estrela (Starring) 
+- Compartilhando o projeto 
+- Me Pagando um café  
 
+
+<div align=center>
+
+[![Mercado Pago Badge](https://img.shields.io/badge/Mercado%20Pago-00B1EA?logo=mercadopago&logoColor=fff&style=flat)]("http://link.mercadopago.com.br/handersongleber") 
+[![PayPal Badge](https://img.shields.io/badge/PayPal-003087?logo=paypal&logoColor=fff&style=flat)]("https://www.paypal.com/donate/?business=GZCPGEVTCZ8VW&no_recurring=0&currency_code=USD")
+[![Liberapay Badge](https://img.shields.io/badge/Liberapay-F6C915?logo=liberapay&logoColor=000&style=flat)](https://liberapay.com/gleberphant/donate)
+
+</div>
 
