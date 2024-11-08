@@ -1,104 +1,48 @@
-
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include "SDL2/SDL.h"
-#include "variables.h"
+#include "functions.c"
 
+APP game;
 
-
+// adiciona nó na lista e retorna o novo nó
+NODE* addNewNode(NODE* node_list){
+        NODE* new_node;
+        new_node = malloc(sizeof(NODE));
+        new_node->next = node_list;
+        node_list =  new_node;
+        return new_node;
+        
+}
 
 int main(int arc, char* argv[]){
-
-    APP game;
-
-    // Inicializa o gerador de números aleatórios com o tempo atual
-    srand(time(NULL));
-
-    // inicialização do SDL
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
-        printf("não foi possível iniciar o SDL");
+   
+    // configurando aplicação
+    if(initApp(&game) > 0 )
+    {
+        printf("\n Fechando aplicação");
         return 1;
     }
-
-    //criação da janela
-    SDL_Window* window = SDL_CreateWindow(
-        "titulo",
-        SDL_WINDOWPOS_CENTERED, 
-        SDL_WINDOWPOS_CENTERED, 
-        RENDER_WIDTH, RENDER_HEIGHT, 
-        0
-    );
-
-    if(window == NULL){
-        printf("Erro inesperado");
-        SDL_Quit();
-        return 1;
-    }
-
-    //criar renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(
-        window,
-        -1,
-        SDL_RENDERER_ACCELERATED
-    );
-
-    if(renderer == NULL){
-        printf("Erro inesperado na criação do renderer");
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-
- 
-  
-
     
     // configura personagens
-
     NODE* node_list = NULL;
     NODE* new_node;
     NODE* current_node;
-    const int INIT_NODES = 0;
-    int count_nodes = 0 ;
+    const int INIT_NODES = 10;
+    int countNodes = 0 ;
     
-    // CRIA OS NÓS
-    while(count_nodes < INIT_NODES ){
-        new_node = malloc(sizeof(NODE));
-        new_node->count = count_nodes;
-        new_node->next = node_list;
-        node_list = new_node;
-        count_nodes++;
-    }
-  
-
-    // INICIALIZA OS NÓS
-    current_node = node_list;
-
-    while(current_node != NULL){
-
-        current_node->node.posX = current_node->count * (INIT_NODES);
-        current_node->node.posY = 10;
-        current_node->node.color.r =  156 + rand() % 100;   
-        current_node->node.color.g =  128 + rand() % 128;   
-        current_node->node.color.b =  50;   
-
-        printf("\n iniciando nó %d", current_node->count);
-
-        current_node = current_node->next;
-    }
-    
-    printf("\n");
     SDL_Event event;
 
     bool running = true;
-
     Uint32 fpsTicket, endTicket, beginTicket, frameCount=0;
+
+    Uint32 timerCount;
     
     
+    float newPosX = 0.0f, newPosY = 1.0f;
     float velX = 0.0f, velY = 1.0f;
     float tileSize = 10;
     int colorRed,colorGrenn,colorBlue;
@@ -106,124 +50,174 @@ int main(int arc, char* argv[]){
 
     fpsTicket = SDL_GetTicks();
 
+    SDL_Rect tile_rect;
+    
     //loop princpial
     while(running){
         //start fps ticker
         beginTicket = SDL_GetTicks();
-        frameCount++;
-
-        // DRAW BACKGROUND
-        SDL_SetRenderDrawColor(renderer, 0,0,0,255);    
-        SDL_RenderClear(renderer);
-
-        // DRAW PLAYERS
-        current_node = node_list;
-
-        while(current_node != NULL){  
-            
-            colorRed =  current_node->node.color.r;          
-            colorGrenn =  current_node->node.color.g;
-            colorBlue =  current_node->node.color.b;
-
-            SDL_SetRenderDrawColor(renderer, colorRed,colorGrenn,colorBlue,255);    
-            
-            SDL_Rect tile_rect;
-    
-            tile_rect.h = tileSize;
-            tile_rect.w = tileSize;
-            tile_rect.x = current_node->node.posX-(tileSize/2);
-            tile_rect.y = current_node->node.posY-(tileSize/2);
-
-            
-            SDL_RenderFillRect(renderer, &tile_rect);
-
-            current_node = current_node->next;
-        }   
-
-
-        SDL_RenderPresent(renderer);
-
-        // UPDATE STATUS
-        current_node = node_list;
-           
-        while(current_node != NULL){
-            randomVel = (rand() % 101 ) / 100.0f;           
-
-            current_node->node.posX += velX ;
-            current_node->node.posY += velY * randomVel;
-
-            if(current_node->node.posY > RENDER_HEIGHT ){
-                current_node->node.posY -= velY * randomVel;
-            }
-
-            current_node = current_node->next;
-        }   
-        
-
 
         // HANDLE EVENTS
+        // Loop para checkar o poll de eventos e definir as ações 
         while(SDL_PollEvent(&event) != 0){
             if(event.type == SDL_QUIT){
                 running = false;
             }
-        }
 
-        //controle os frames
-        endTicket = SDL_GetTicks();
-
-        if( beginTicket - endTicket < (1000/60) ){
-            SDL_Delay((1000/60) - ( beginTicket - endTicket ) );
-        }
-
-
-        //MEDE O FPS
-        //  a cada 1 segundo imprime o contador de FPS e depois zera
-        if( ( endTicket - fpsTicket) > 1000 ){            
-            
-            // cria novo no a cada segundo
-
+            // cria novo nó a cada click do mouse
+            if(event.type == SDL_MOUSEBUTTONDOWN)
+            {
             new_node = malloc(sizeof(NODE));
-            new_node->count = count_nodes;
-            new_node->node.posX = tileSize + ( rand() % RENDER_WIDTH-40);
+            new_node->count = countNodes;
+            new_node->node.posX = tileSize + ( rand() % RENDER_WIDTH-(tileSize*2));
             new_node->node.posY = 10;
-            new_node->node.color.r =  156 + rand() % 100;   
-            new_node->node.color.g =  128 + rand() % 128;   
-            new_node->node.color.b =  50;   
+
+            new_node->node.color.r =  64;   
+            new_node->node.color.g =  64;   
+            new_node->node.color.b =  128 + rand() % 128; 
+            new_node->node.size = tileSize;  
 
             new_node->next = node_list;
             node_list = new_node;         
 
-            count_nodes++;
-            printf("\nFPS %d", frameCount);
-            fpsTicket = SDL_GetTicks();
-            frameCount = 0 ;
+            countNodes++;
+                
+            }
+            // diminui e aumenta velocidade das gotas 
+            if(event.type == SDL_KEYDOWN){
+                if (event.key.keysym.sym == SDLK_UP) {
+                    velY += 0.1f;
+           
+                } 
+                if (event.key.keysym.sym == SDLK_DOWN) {
+                    velY -= 0.1f;
+           
+                }
+            }
+
+        }
+        
+        // cria novo nó a cada ciclo do timer(1 segundo)
+        if(timerCount > 0){
+            new_node = malloc(sizeof(NODE));
+            new_node->count = countNodes;
+            new_node->node.posX = tileSize + ( rand() % RENDER_WIDTH-(tileSize*2));
+            new_node->node.posY = 10;
+
+            new_node->node.color.r =  64;   
+            new_node->node.color.g =  64;   
+            new_node->node.color.b =  128 + rand() % 128; 
+            new_node->node.size = tileSize;  
+
+            new_node->next = node_list;
+            node_list = new_node;         
+
+            countNodes++;
+
+            timerCount--;
         }
 
-       //printf("\n ticker %d", startTicket);
+
+        // UPDATE STATUS
+        // loop para realizar as ações em cada objeto 
+        // os objetos eles ficam em uma linked list
+
+        current_node = node_list;
+           
+        while(current_node != NULL){
+            // define uma velocidade alatoria para movimentar o objeto
+            randomVel = (rand() % 101 ) / 100.0f;           
+            
+            // move o objeto de acordo com a velocidade aleatoria
+            // TODO substituir esse tpo de movimento por movimento vetorial
+            newPosX = current_node->node.posX + (velX * randomVel );
+            newPosY = current_node->node.posY + (velY * randomVel);
+
+            // checa colisão do nó
+            if(newPosY < RENDER_HEIGHT ){
+                current_node->node.posY = newPosY;
+            }
+
+            current_node = current_node->next;
+        }   
+           
+        // DRAW GAME    
+        // loop para desenhar os objetos
+        
+        // 1º limpa a tela
+        SDL_SetRenderDrawColor(game.renderer, 0,0,0,255);    
+        SDL_RenderClear(game.renderer);
+
+        // 2º loop que desenha cada objeto presente no poll de objetos
+        current_node = node_list;
+
+        while(current_node != NULL){  
+       
+            SDL_SetRenderDrawColor(
+                game.renderer, 
+                current_node->node.color.r, 
+                current_node->node.color.g,
+                current_node->node.color.b,
+                255);    
+                   
+            tile_rect.h = new_node->node.size;
+            tile_rect.w = new_node->node.size;
+            tile_rect.x = current_node->node.posX-(tileSize/2);
+            tile_rect.y = current_node->node.posY-(tileSize/2);
+
+            SDL_RenderFillRect( game.renderer, &tile_rect);
+
+            current_node = current_node->next;
+        }   
+
+        // desenha o render na tela
+        SDL_RenderPresent( game.renderer);
 
 
+        // CONTROLE DO FPS DO JOGO
+        // controla a quantidade de fps e exibe
+        endTicket = SDL_GetTicks();
+        
+        if( beginTicket - endTicket < (1000/60) ){
+            SDL_Delay((1000/60) - ( beginTicket - endTicket ) );
+        }        
+        
+        // imprime a quantidade de FPS a cada segundo
+        if( ( endTicket - fpsTicket) > 1000 ){              
+            printf("\nFPS %d - OBJETOS NA LISTA: %d", frameCount, countNodes);
+            
+            //contador de tempo, a cada segundo acrescenta 1
+            timerCount++;            
 
+            fpsTicket = SDL_GetTicks();
+            frameCount = 0 ;
+
+
+        }
+        
+        frameCount++;
+
+        
     }
 
+    // ENCERRAMENTO DA APLICAÇÃO
     // fechando aplicação e limpando recursos
     current_node = node_list;
     while( current_node != NULL ){
         
         node_list = current_node->next;     
         
-        printf("\n limpando char list %p, posX %d e posY", current_node, current_node->node.posX);      
+        printf("\n Free Node:  Id [%d] - Address [%p]", current_node->count, current_node);      
 
 
         free(current_node);
 
         current_node = node_list;
 
-  
-
     }
   
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer( game.renderer);
+    SDL_DestroyWindow( game.window);
     SDL_Quit();
 
 

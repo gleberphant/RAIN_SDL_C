@@ -10,7 +10,7 @@ struct COLOR{
 
 struct OBJECT
 {
-    float posX, posY;
+    float posX, posY, size;
     COLOR color;
     int life;
 };
