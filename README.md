@@ -31,6 +31,17 @@ Gostou do projeto? Por favor considere fazer uma doação para ajudar a melhorá
 
 Aplicação gráfica feita em C/Cpp utilizando a biblioteca  `SDL` em 2024. Pretendo implementar um sistema de particulas.
 
+
+#### ▶️Comandos
+
+```
+click com o botão esquerdo do mouse para criar novas gosta de chuva
+```
+
+```
+Aperte os direcionais cima e baixo para aumentar ou diminuir a gravidade
+```
+
 <br>
 
 ## 💻 Pré-requisitos
@@ -57,19 +68,13 @@ gcc -o main main.c -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -I/SDL2/includes -L
 
 <br>
 
-## ▶️  Execução do projeto
+##   Execução do projeto
 
-### Windows
-
-```
-main.exe
-```
-
-### Linux
 
 ```
-./main
+execute o aplicativo 'main.exe'
 ```
+
 
 <br>
 
