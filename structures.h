@@ -1,3 +1,5 @@
+#include "includes.h"
+
 typedef struct OBJECT OBJECT;
 typedef struct COLOR COLOR;
 typedef struct NODE NODE;
