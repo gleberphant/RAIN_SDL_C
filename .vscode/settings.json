@@ -1,8 +1,4 @@
 {
-    "files.associations": {
-        "stdio.h": "c",
-        "variables.h": "c"
-    },
     "makefile.launchConfigurations": [
         {
             "cwd": "e:\\APP_RAIN_SDL_C",

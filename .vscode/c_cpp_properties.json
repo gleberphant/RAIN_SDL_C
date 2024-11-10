@@ -3,9 +3,10 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}\\SDL2\\include",
-                "${workspaceFolder}\\SDL2_ttf\\include"
+                "${workspaceFolder}\\*",
+                "${workspaceFolder}\\SDL2\\include\\SDL2",
+                "${workspaceFolder}\\SDL2_ttf\\include\\SDL2",
+                "${workspaceFolder}\\SDL2_image\\include\\SDL2"
             ],
             "defines": [
                 "_DEBUG",

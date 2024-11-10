@@ -1,8 +1,10 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_image.h>
+
 #include <stdio.h>
 
-#include "variables.h"
+#include "structures.h"
 
 int initApp(APP* gameParam){
     // inicialização do SDL
