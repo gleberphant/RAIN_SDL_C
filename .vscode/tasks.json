@@ -10,10 +10,13 @@
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-I${workspaceFolder}\\SDL2\\include",
+                "-I${workspaceFolder}\\SDL2_ttf\\include",
                 "-L${workspaceFolder}\\SDL2\\lib",
+                "-L${workspaceFolder}\\SDL2_ttf\\lib",
                 "-lmingw32",
                 "-lSDL2main",
-                "-lSDL2"
+                "-lSDL2",
+                "-lSDL2_ttf"
             ],
             "options": {
                 "cwd": "${fileDirname}"

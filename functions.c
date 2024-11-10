@@ -1,4 +1,7 @@
-#include "SDL2/SDL.h"
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <stdio.h>
+
 #include "variables.h"
 
 int initApp(APP* gameParam){
@@ -37,6 +40,11 @@ int initApp(APP* gameParam){
         return 1;
     } 
     
+    
+    
+
+
+    // tudo ok retorne 0
     return 0;
 
 }
