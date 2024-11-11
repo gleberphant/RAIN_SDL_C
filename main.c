@@ -7,24 +7,25 @@ APP app;
 int countNodes = 0 ;
 NODE* node_list = NULL;
 NODE* newNode = NULL;
-NODE* current_node= NULL;
+NODE* current_node = NULL;
 
 
-SDL_Surface* tempSurface;    
-SDL_Surface* backgroundIMG;
+SDL_Surface* tempSurface = NULL;    
+SDL_Surface* backgroundIMG = NULL;
 SDL_Rect rectTexts;
 SDL_Rect tempRect;
 
-char tempString[1000] ;
+char tempString[1000];
 
 bool running = true;
+
 Uint32 lastTicket, endTicket, beginTicket, frameCount=0, currentFPS;
 Uint32 timerCount = 0, timerValue = 1000;
 
 float newPosX = 0.0f, newPosY = 0.0f;
 float velX = 0.0f, velY = 1.5f;
 float tileSize = 10;
-float randomVel;
+float randomVel = 0;
 
 int main(int argc, char* argv[]){
    
@@ -66,23 +67,37 @@ int main(int argc, char* argv[]){
             // verifica click do mouse
             if( event.type == SDL_MOUSEBUTTONDOWN)
             {
-            
-            //cria novo objeto a cada click
-            newNode = malloc(sizeof(NODE));
-            newNode->count = countNodes;
-            newNode->node.posX = event.button.x;
-            newNode->node.posY = 10;
+                if (event.button.x < 0 && event.button.x > RENDER_WIDTH)
+                {
+                    printf("clicou fora");
+                    continue;
+                }
+                
+                //cria novo objeto a cada click
+                newNode = malloc(sizeof(NODE));
 
-            newNode->node.color.r =  64;   
-            newNode->node.color.g =  128;   
-            newNode->node.color.b =  128 + rand() % 128; 
-            newNode->node.sizeWidth = tileSize/2;  
-            newNode->node.sizeHeight = tileSize;  
+                newNode->count = countNodes;
+                newNode->node.posX = event.button.x;
+                newNode->node.posY = 10;
 
-            newNode->next = node_list;
-            node_list = newNode;         
+                newNode->node.color.r =  64;   
+                newNode->node.color.g =  128;   
+                newNode->node.color.b =  128 + rand() % 128; 
 
-            countNodes++;
+                newNode->node.pixelColor = SDL_MapRGB(
+                        app.bufferScreen->format, 
+                        newNode->node.color.r,
+                        newNode->node.color.g,
+                        newNode->node.color.b
+                );
+
+                newNode->node.sizeWidth = tileSize/2;  
+                newNode->node.sizeHeight = tileSize;  
+
+                newNode->next = node_list;
+                node_list = newNode;         
+
+                countNodes++;
                 
             }
 
@@ -111,12 +126,20 @@ int main(int argc, char* argv[]){
             
             newNode = malloc(sizeof(NODE));
             newNode->count = countNodes;
-            newNode->node.posX = tileSize + ( rand() % RENDER_WIDTH-(tileSize*2));
+            newNode->node.posX = (tileSize*2) + ( rand() % RENDER_WIDTH-(tileSize*3));
             newNode->node.posY = 10;
 
             newNode->node.color.r =  32;   
             newNode->node.color.g =  64;   
             newNode->node.color.b =  128 + rand() % 128; 
+            
+            newNode->node.pixelColor = SDL_MapRGB(
+                app.bufferScreen->format, 
+                newNode->node.color.r,
+                newNode->node.color.g,
+                newNode->node.color.b
+            );
+            
             newNode->node.sizeWidth = tileSize/2;  
             newNode->node.sizeHeight = tileSize;    
 
@@ -125,20 +148,19 @@ int main(int argc, char* argv[]){
 
             countNodes++;
 
-            timerCount--;
-            
+            timerCount--;            
         }
 
-
         // UPDATE STATUS
-        // loop para realizar as ações em cada objeto 
+        // loop para realizar as ações de cada objeto 
         // os objetos eles ficam em uma linked list
 
+        // mover cada no 
         current_node = node_list;
            
         while(current_node != NULL){
             // define uma velocidade alatoria para movimentar o objeto
-            randomVel = (rand() % 101 ) / 100.0f;           
+            randomVel = (rand() % 100 ) / 100.0f;           
             
             // move o objeto de acordo com a velocidade aleatoria
             // TODO substituir esse tpo de movimento por movimento vetorial
@@ -146,7 +168,7 @@ int main(int argc, char* argv[]){
             newPosY = current_node->node.posY + (velY * randomVel);
 
             // checa colisão do nó
-            if(newPosY < RENDER_HEIGHT ){
+            if(newPosY  < RENDER_HEIGHT ){
                 current_node->node.posY = newPosY;
             }
 
@@ -159,7 +181,7 @@ int main(int argc, char* argv[]){
         // loop para desenhar os objetos
         
         // 1º limpa o buffer da tela
-        SDL_FillRect(app.bufferScreen, &app.rectScreen, SDL_MapRGB(app.bufferScreen->format, 0,0,0));
+        SDL_FillRect(app.bufferScreen, &app.rectScreen, app.pixelBLACK);
         
         // 2º desenha o background
         
@@ -170,21 +192,23 @@ int main(int argc, char* argv[]){
 
         while(current_node != NULL){  
                          
-            tempRect.h = newNode->node.sizeHeight;
-            tempRect.w = newNode->node.sizeWidth;
+            tempRect.h = current_node->node.sizeHeight;
+            tempRect.w = current_node->node.sizeWidth;
             tempRect.x = current_node->node.posX-(tileSize/2);
             tempRect.y = current_node->node.posY-(tileSize/2);
-
-            SDL_FillRect( 
-                app.bufferScreen, 
-                &tempRect, 
-                SDL_MapRGB(
-                    app.bufferScreen->format, 
-                    current_node->node.color.r,
-                    current_node->node.color.g,
-                    current_node->node.color.b
-                )
-            );
+            
+            if(
+                tempRect.x > 0 &&
+                tempRect.x < app.rectScreen.w &&
+                tempRect.y > 0 &&
+                tempRect.y < app.rectScreen.h )
+            {
+                SDL_FillRect( 
+                    app.bufferScreen, 
+                    &tempRect, 
+                    current_node->node.pixelColor
+                );
+            }
 
             current_node = current_node->next;
         }   
@@ -192,8 +216,7 @@ int main(int argc, char* argv[]){
         // desenha interface de textos    
         sprintf(tempString, "Quantidade de Objetos %d", countNodes);
         
-        tempSurface = TTF_RenderText_Solid(app.font, tempString, SDL_COLOR_PALLETE[WHITE]);
-        
+        tempSurface = TTF_RenderText_Solid(app.font, tempString, SDL_COLOR_PALLETE[WHITE]); 
         tempRect.w = tempSurface->w;
         tempRect.h = tempSurface->h;
         tempRect.x = 10;

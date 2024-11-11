@@ -28,6 +28,7 @@ struct APP
     SDL_Texture* textureScreen;
     SDL_Rect rectScreen;
     TTF_Font* font;
+    Uint32 pixelBLACK;
     
 };
 
@@ -48,7 +49,7 @@ int initApp(APP* app){
     printf("\n|- Criacao de janela ......... ");
    
     app->window = SDL_CreateWindow(
-        "titulo",
+        "RAIN APP",
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED, 
         RENDER_WIDTH, RENDER_HEIGHT, 
@@ -127,7 +128,21 @@ int initApp(APP* app){
 
     // inicializando buffer da imagem
     printf("\n|- Criando Buffer Screen ..... ");
+    
     app->bufferScreen = SDL_CreateRGBSurface(0, RENDER_WIDTH, RENDER_HEIGHT, 32, 0 , 0, 0 , 0 );
+    
+    if (app->bufferScreen == NULL){
+        printf("\n >> %s", SDL_GetError());
+        
+        TTF_Quit();
+        SDL_DestroyRenderer(app->renderer);
+        SDL_DestroyWindow(app->window);
+        SDL_Quit();
+        return 1;
+    }
+
+    app->pixelBLACK = SDL_MapRGB(app->bufferScreen->format, 0,0,0);
+    
     printf("[OK] |");
 
     // Definindo retangulo da tela
