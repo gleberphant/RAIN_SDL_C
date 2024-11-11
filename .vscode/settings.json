@@ -5,5 +5,8 @@
             "binaryPath": "e:\\APP_RAIN_SDL_C\\main",
             "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "includes.h": "c"
+    }
 }

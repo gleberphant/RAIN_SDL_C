@@ -8,8 +8,8 @@ FONTES = main.c
 CFLAGS = -Wall -g -I./SDL2/include/SDL2/ -I./SDL2_ttf/include/SDL2/ -I./SDL2_image/include/SDL2/
 
 # Bibliotecas
-LIBS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -mwindows
-LIBS_PATH = -L./SDL2/lib -L./SDL2/lib -L./SDL2_ttf/lib -L./SDL2_image/lib 
+LIBS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image
+LIBS_PATH = -L./SDL2/lib -L./SDL2_ttf/lib -L./SDL2_image/lib 
 
 # Regra padrão
 all: $(EXECUTAVEL)

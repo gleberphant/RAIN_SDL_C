@@ -1,94 +1,54 @@
 #include "includes.h"
 #include "functions.c"
+#include "nodes.c"
 
-APP game;
+APP app;
 
-#define MAX_FPS 80
-#define ONE_SEC_IN_MSEC 1000
+int countNodes = 0 ;
+NODE* node_list = NULL;
+NODE* newNode = NULL;
+NODE* current_node= NULL;
 
-// constantes de cores
 
-enum colorIndex{ WHITE, BLACK, RED, GREEN, BLUE };
+SDL_Surface* tempSurface;    
+SDL_Surface* backgroundIMG;
+SDL_Rect rectTexts;
+SDL_Rect tempRect;
 
-const SDL_Color SDL_COLOR_PALLETE[] = {
-    [WHITE] = {255, 255, 255 , 255},
-    [BLACK] = {0, 0, 0 , 255},
-    [RED] = {255, 0, 0 , 255},
-    [GREEN] = {0, 255, 0 , 255},
-    [BLUE] = {0, 0, 255 , 255}
-};
+char tempString[1000] ;
 
-// adiciona nó na lista e retorna o novo nó
-NODE* addNewNode(NODE* node_list){
-        NODE* new_node;
-        new_node = malloc(sizeof(NODE));
-        new_node->next = node_list;
-        node_list =  new_node;
-        return new_node;
-        
-}
+bool running = true;
+Uint32 lastTicket, endTicket, beginTicket, frameCount=0, currentFPS;
+Uint32 timerCount = 0, timerValue = 1000;
+
+float newPosX = 0.0f, newPosY = 0.0f;
+float velX = 0.0f, velY = 1.5f;
+float tileSize = 10;
+float randomVel;
 
 int main(int argc, char* argv[]){
    
-    // configurando aplicação
-    if(initApp(&game) > 0 )
+    // inicializando aplicação
+    printf("\n ___________________________________");
+    printf("\n|                                   |");
+    if(initApp(&app) > 0 )
     {
         printf("\n Fechando aplicação");
         return 1;
     }
-    
+    printf("\n|___________________________________|\n\n");
 
-    // inicialização do SDL TTF (fontes true type)
-    TTF_Init();
-    IMG_Init(IMG_INIT_PNG);
+    // CARREGANDO CENA
 
-    TTF_Font* font = TTF_OpenFont("./assets/digital_display_tfb.ttf", 40);
-
-    //SDL_Color colorWhite = {255, 255, 255};
-    
-    SDL_Surface* tempSurface;
-    SDL_Surface* bufferScreen;
-    SDL_Surface* backgroundSurface;
-
-    backgroundSurface = IMG_Load("./assets/backgroundForest.png");
-
-    bufferScreen = SDL_CreateRGBSurface(0, RENDER_WIDTH, RENDER_HEIGHT, 32, 0 , 0, 0 , 0 );
-
-    SDL_Texture* textureScreen;
-
-    SDL_Rect rectTexts;
-    SDL_Rect rectScreen = { 0, 0, RENDER_WIDTH, RENDER_HEIGHT};
-
-
-    // configura personagens
-    NODE* node_list = NULL;
-    NODE* newNode;
-    NODE* current_node;
-    
-    char textInterface[1000] ;
-
-    int countNodes = 0 ;
+    backgroundIMG = IMG_Load("./assets/backgroundForest.png");
+  
     
     SDL_Event event;
 
-    bool running = true;
-    Uint32 lastTicket, endTicket, beginTicket, frameCount=0, currentFPS;
-
-     // contador de ciclos, e duração de um ciclo em milisegundos
-    Uint32 timerCount = 0, timerValue = 1000;
-    
-    
-    float newPosX = 0.0f, newPosY = 0.0f;
-    float velX = 0.0f, velY = 1.5f;
-    
-    float tileSize = 10;
-    
-    //int colorRed, colorGrenn, colorBlue;
-    float randomVel;
 
     lastTicket = SDL_GetTicks();
 
-    SDL_Rect rectNode;
+    
     
     //loop princpial
     while(running){
@@ -199,27 +159,27 @@ int main(int argc, char* argv[]){
         // loop para desenhar os objetos
         
         // 1º limpa o buffer da tela
-        SDL_FillRect(bufferScreen, &rectScreen, SDL_MapRGB(bufferScreen->format, 0,0,0));
+        SDL_FillRect(app.bufferScreen, &app.rectScreen, SDL_MapRGB(app.bufferScreen->format, 0,0,0));
         
         // 2º desenha o background
         
-        SDL_BlitSurface(backgroundSurface, NULL, bufferScreen, &rectScreen);
+        SDL_BlitSurface(backgroundIMG, NULL, app.bufferScreen, &app.rectScreen);
 
         // 2º loop que desenha cada objeto presente no poll de objetos
         current_node = node_list;
 
         while(current_node != NULL){  
                          
-            rectNode.h = newNode->node.sizeHeight;
-            rectNode.w = newNode->node.sizeWidth;
-            rectNode.x = current_node->node.posX-(tileSize/2);
-            rectNode.y = current_node->node.posY-(tileSize/2);
+            tempRect.h = newNode->node.sizeHeight;
+            tempRect.w = newNode->node.sizeWidth;
+            tempRect.x = current_node->node.posX-(tileSize/2);
+            tempRect.y = current_node->node.posY-(tileSize/2);
 
             SDL_FillRect( 
-                bufferScreen, 
-                &rectNode, 
+                app.bufferScreen, 
+                &tempRect, 
                 SDL_MapRGB(
-                    bufferScreen->format, 
+                    app.bufferScreen->format, 
                     current_node->node.color.r,
                     current_node->node.color.g,
                     current_node->node.color.b
@@ -229,46 +189,42 @@ int main(int argc, char* argv[]){
             current_node = current_node->next;
         }   
 
-        // desenha interface de textos
-
+        // desenha interface de textos    
+        sprintf(tempString, "Quantidade de Objetos %d", countNodes);
         
+        tempSurface = TTF_RenderText_Solid(app.font, tempString, SDL_COLOR_PALLETE[WHITE]);
         
+        tempRect.w = tempSurface->w;
+        tempRect.h = tempSurface->h;
+        tempRect.x = 10;
+        tempRect.y = 10;
         
-        sprintf(textInterface, "Quantidade de Objetos %d", countNodes);
-        
-        tempSurface = TTF_RenderText_Solid(font, textInterface, SDL_COLOR_PALLETE[WHITE]);
-        
-        rectTexts.w = tempSurface->w;
-        rectTexts.h = tempSurface->h;
-        rectTexts.x = 10;
-        rectTexts.y = 10;
-        
-        SDL_BlitSurface(tempSurface, NULL, bufferScreen, &rectTexts);
+        SDL_BlitSurface(tempSurface, NULL, app.bufferScreen, &tempRect);
         SDL_FreeSurface(tempSurface);
  
-        sprintf(textInterface, "FPS %d", currentFPS);
-        tempSurface = TTF_RenderText_Solid(font, textInterface, SDL_COLOR_PALLETE[WHITE]);
+        sprintf(tempString, "FPS %d", currentFPS);
+        tempSurface = TTF_RenderText_Solid(app.font, tempString, SDL_COLOR_PALLETE[WHITE]);
         
-        rectTexts.w = tempSurface->w;
-        rectTexts.h = tempSurface->h;
-        rectTexts.x = 500;
-        rectTexts.y = 10;
+        tempRect.w = tempSurface->w;
+        tempRect.h = tempSurface->h;
+        tempRect.x = 500;
+        tempRect.y = 10;
 
-        SDL_BlitSurface(tempSurface, NULL, bufferScreen, &rectTexts);
+        SDL_BlitSurface(tempSurface, NULL, app.bufferScreen, &tempRect);
         SDL_FreeSurface(tempSurface);
     
         // cria textura com todo desenho da tela
-        textureScreen = SDL_CreateTextureFromSurface(game.renderer, bufferScreen);
+        app.textureScreen = SDL_CreateTextureFromSurface(app.renderer, app.bufferScreen);
 
         
         // limpa o render e copia a textura da tela para render
         //SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 255);    
         //SDL_RenderClear(game.renderer);
-        SDL_RenderCopy(game.renderer, textureScreen, NULL, &rectScreen);
-        SDL_RenderPresent( game.renderer);
+        SDL_RenderCopy(app.renderer, app.textureScreen, NULL, &app.rectScreen);
+        SDL_RenderPresent( app.renderer);
         
         // destroyu a textura da tela para liberar a memoria da GPU
-        SDL_DestroyTexture(textureScreen);
+        SDL_DestroyTexture(app.textureScreen);
 
         // CONTROLA O CLOCK (FPS) DO JOGO
         // controla a quantidade de fps e exibe
@@ -319,18 +275,15 @@ int main(int argc, char* argv[]){
     
     
 
-    SDL_DestroyTexture(textureScreen);
+    SDL_DestroyTexture(app.textureScreen);
+    SDL_FreeSurface(backgroundIMG);
+    SDL_FreeSurface(app.bufferScreen);
     
+    TTF_CloseFont(app.font);
     
 
-    SDL_FreeSurface(backgroundSurface);
-    SDL_FreeSurface(bufferScreen);
-    TTF_CloseFont(font);
-    TTF_Quit();
+    closeApp(&app);
   
-    SDL_DestroyRenderer( game.renderer);
-    SDL_DestroyWindow( game.window);
-    SDL_Quit();
 
     return 0;
 

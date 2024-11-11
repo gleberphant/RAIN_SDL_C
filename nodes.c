@@ -3,12 +3,10 @@
 typedef struct OBJECT OBJECT;
 typedef struct COLOR COLOR;
 typedef struct NODE NODE;
-typedef struct APP APP;
 
 struct COLOR{
     int r, g, b;
 };
-
 
 struct OBJECT
 {
@@ -17,23 +15,18 @@ struct OBJECT
     int life;
 };
 
-
-
 struct NODE{
     int count;
     OBJECT node;
     NODE* next;
 };
 
-
-struct APP
-{
-    SDL_Renderer* renderer;
-    SDL_Window* window;
-};
-
-
-
-
-#define RENDER_HEIGHT 600
-#define RENDER_WIDTH 800
+// adiciona nó na lista e retorna o novo nó
+NODE* addNewNode(NODE* node_list){
+        NODE* new_node;
+        new_node = malloc(sizeof(NODE));
+        new_node->next = node_list;
+        node_list =  new_node;
+        return new_node;
+        
+}
