@@ -4,16 +4,13 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}\\*",
-                "${workspaceFolder}\\SDL2\\include\\SDL2",
-                "${workspaceFolder}\\SDL2_ttf\\include\\SDL2",
-                "${workspaceFolder}\\SDL2_image\\include\\SDL2"
+                "${workspaceFolder}\\SDL3\\include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:\\msys64\\ucrt64\\bin\\gcc.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-gcc-x64"

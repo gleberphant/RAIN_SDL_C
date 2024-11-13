@@ -60,12 +60,12 @@ int main(int argc, char* argv[]){
         // Loop no poll(lista) de eventos 
         while(SDL_PollEvent(&event) != 0){
             // verifica sair
-            if(event.type == SDL_QUIT){
+            if(event.type == SDL_EVENT_QUIT){
                 running = false;
             }
 
             // verifica click do mouse
-            if( event.type == SDL_MOUSEBUTTONDOWN)
+            if( event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
             {
                 if (event.button.x < 0 && event.button.x > RENDER_WIDTH)
                 {
@@ -84,8 +84,8 @@ int main(int argc, char* argv[]){
                 newNode->node.color.g =  128;   
                 newNode->node.color.b =  128 + rand() % 128; 
 
-                newNode->node.pixelColor = SDL_MapRGB(
-                        app.bufferScreen->format, 
+                newNode->node.pixelColor = SDL_MapSurfaceRGB(
+                        app.bufferScreen, 
                         newNode->node.color.r,
                         newNode->node.color.g,
                         newNode->node.color.b
@@ -102,17 +102,17 @@ int main(int argc, char* argv[]){
             }
 
             // verifica se há tecla pressionada
-            if(event.type == SDL_KEYDOWN){
+            if(event.type == SDL_EVENT_KEY_DOWN){
 
                 // tecla cima pressionada
-                if (event.key.keysym.sym == SDLK_UP) {
+                if (event.key.key == SDLK_UP) {
                     // aumenta gravidade
                     velY += 0.1f;
            
                 } 
                 
                 // tecla baixo pressionada
-                if (event.key.keysym.sym == SDLK_DOWN) {
+                if (event.key.key == SDLK_DOWN) {
                     // diminui gravidade
                     velY -= 0.1f;
            
@@ -133,8 +133,8 @@ int main(int argc, char* argv[]){
             newNode->node.color.g =  64;   
             newNode->node.color.b =  128 + rand() % 128; 
             
-            newNode->node.pixelColor = SDL_MapRGB(
-                app.bufferScreen->format, 
+            newNode->node.pixelColor = SDL_MapSurfaceRGB(
+                app.bufferScreen, 
                 newNode->node.color.r,
                 newNode->node.color.g,
                 newNode->node.color.b
@@ -181,7 +181,7 @@ int main(int argc, char* argv[]){
         // loop para desenhar os objetos
         
         // 1º limpa o buffer da tela
-        SDL_FillRect(app.bufferScreen, &app.rectScreen, app.pixelBLACK);
+        SDL_FillSurfaceRect(app.bufferScreen, &app.rectScreen, app.pixelBLACK);
         
         // 2º desenha o background
         
@@ -203,7 +203,7 @@ int main(int argc, char* argv[]){
                 tempRect.y > 0 &&
                 tempRect.y < app.rectScreen.h )
             {
-                SDL_FillRect( 
+                SDL_FillSurfaceRect( 
                     app.bufferScreen, 
                     &tempRect, 
                     current_node->node.pixelColor
@@ -216,17 +216,17 @@ int main(int argc, char* argv[]){
         // desenha interface de textos    
         sprintf(tempString, "Quantidade de Objetos %d", countNodes);
         
-        tempSurface = TTF_RenderText_Solid(app.font, tempString, SDL_COLOR_PALLETE[WHITE]); 
+        tempSurface = TTF_RenderText_Solid(app.font, tempString, 0, SDL_COLOR_PALLETE[WHITE]); 
         tempRect.w = tempSurface->w;
         tempRect.h = tempSurface->h;
         tempRect.x = 10;
         tempRect.y = 10;
         
         SDL_BlitSurface(tempSurface, NULL, app.bufferScreen, &tempRect);
-        SDL_FreeSurface(tempSurface);
+        SDL_DestroySurface(tempSurface);
  
         sprintf(tempString, "FPS %d", currentFPS);
-        tempSurface = TTF_RenderText_Solid(app.font, tempString, SDL_COLOR_PALLETE[WHITE]);
+        tempSurface = TTF_RenderText_Solid(app.font, tempString, 0, SDL_COLOR_PALLETE[WHITE]);
         
         tempRect.w = tempSurface->w;
         tempRect.h = tempSurface->h;
@@ -234,17 +234,17 @@ int main(int argc, char* argv[]){
         tempRect.y = 10;
 
         SDL_BlitSurface(tempSurface, NULL, app.bufferScreen, &tempRect);
-        SDL_FreeSurface(tempSurface);
+        SDL_DestroySurface(tempSurface);
     
         // cria textura com todo desenho da tela
         app.textureScreen = SDL_CreateTextureFromSurface(app.renderer, app.bufferScreen);
 
         
         // limpa o render e copia a textura da tela para render
-        //SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 255);    
-        //SDL_RenderClear(game.renderer);
-        SDL_RenderCopy(app.renderer, app.textureScreen, NULL, &app.rectScreen);
-        SDL_RenderPresent( app.renderer);
+        SDL_SetRenderDrawColor(app.renderer, 0, 0, 255, 255);    
+        SDL_RenderClear(app.renderer);
+        SDL_RenderTexture(app.renderer, app.textureScreen, NULL, NULL);
+        SDL_RenderPresent(app.renderer);
         
         // destroyu a textura da tela para liberar a memoria da GPU
         SDL_DestroyTexture(app.textureScreen);
@@ -299,8 +299,8 @@ int main(int argc, char* argv[]){
     
 
     SDL_DestroyTexture(app.textureScreen);
-    SDL_FreeSurface(backgroundIMG);
-    SDL_FreeSurface(app.bufferScreen);
+    SDL_DestroySurface(backgroundIMG);
+    SDL_DestroySurface(app.bufferScreen);
     
     TTF_CloseFont(app.font);
     

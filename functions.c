@@ -38,7 +38,7 @@ int initApp(APP* app){
     // inicialização do SDL
     printf("\n|- Inicializando SDL ......... ");
 
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
+    if(!SDL_Init(SDL_INIT_VIDEO)){
 
         printf("\n >> %s", SDL_GetError());
         return 1;
@@ -50,9 +50,8 @@ int initApp(APP* app){
    
     app->window = SDL_CreateWindow(
         "RAIN APP",
-        SDL_WINDOWPOS_CENTERED, 
-        SDL_WINDOWPOS_CENTERED, 
-        RENDER_WIDTH, RENDER_HEIGHT, 
+        RENDER_WIDTH, 
+        RENDER_HEIGHT, 
         0
     );
     
@@ -70,8 +69,7 @@ int initApp(APP* app){
 
     app->renderer = SDL_CreateRenderer(
         app->window,
-        -1,
-        SDL_RENDERER_ACCELERATED
+        NULL
     );
 
     if( app->renderer == NULL){
@@ -89,7 +87,7 @@ int initApp(APP* app){
     // inicialização do SDL TTF (fontes true type)
     printf("\n|- Inicializando SDL TTF ..... ");
 
-    if(TTF_Init() == -1){
+    if(!TTF_Init()){
 
         printf("\n >> %s", SDL_GetError());
 
@@ -129,7 +127,7 @@ int initApp(APP* app){
     // inicializando buffer da imagem
     printf("\n|- Criando Buffer Screen ..... ");
     
-    app->bufferScreen = SDL_CreateRGBSurface(0, RENDER_WIDTH, RENDER_HEIGHT, 32, 0 , 0, 0 , 0 );
+    app->bufferScreen = SDL_CreateSurface(RENDER_WIDTH, RENDER_HEIGHT, SDL_PIXELFORMAT_ARGB32);
     
     if (app->bufferScreen == NULL){
         printf("\n >> %s", SDL_GetError());
@@ -141,7 +139,7 @@ int initApp(APP* app){
         return 1;
     }
 
-    app->pixelBLACK = SDL_MapRGB(app->bufferScreen->format, 0,0,0);
+    app->pixelBLACK = SDL_MapSurfaceRGB(app->bufferScreen, 0,0,0);
     
     printf("[OK] |");
 
