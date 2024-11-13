@@ -65,7 +65,7 @@ int initApp(APP* app){
     printf("[OK] |");
 
     //criar renderer
-    printf("\n|- Criacao de renderes ....... ");
+    printf("\n|- Criacao de renderer ....... ");
 
     app->renderer = SDL_CreateRenderer(
         app->window,
@@ -74,7 +74,6 @@ int initApp(APP* app){
 
     if( app->renderer == NULL){
 
-        printf("\n Erro inesperado na criação do renderer");
         printf("\n >> %s", SDL_GetError());
         SDL_DestroyWindow(app->window);
         SDL_Quit();
@@ -115,7 +114,6 @@ int initApp(APP* app){
     if(IMG_Init(IMG_INIT_PNG) == 0){
         
         printf("\n >> %s", SDL_GetError());
-        
         TTF_Quit();
         SDL_DestroyRenderer(app->renderer);
         SDL_DestroyWindow(app->window);
